@@ -2,35 +2,36 @@ class SteamGame {
     # Properties
 
     [int]$ApplicationID
-    hidden [int]$Universe
+    [int]$Universe
     [string]$Name
     [StateFlags[]]$StateFlags
-    hidden [string]$installdir
-    hidden [datetime]$LastUpdated
-    hidden [UpdateResult]$UpdateResult
-    hidden [uint64]$SizeOnDisk
-    hidden [int]$buildid
-    hidden [string]$LastOwner
-    hidden [uint64]$BytesToDownload
-    hidden [uint64]$BytesDownloaded
-    hidden [AutoUpdateBehavior]$AutoUpdateBehavior
-    hidden [string]$AllowOtherDownloadsWhileRunning
+    [string]$installdir
+    [datetime]$LastUpdated
+    [UpdateResult]$UpdateResult
+    [uint64]$SizeOnDisk
+    [int]$buildid
+    [string]$LastOwner
+    [uint64]$BytesToDownload
+    [uint64]$BytesDownloaded
+    [AutoUpdateBehavior]$AutoUpdateBehavior
+    [AllowOtherDownloads]$AllowOtherDownloadsWhileRunning
     [PSObject]$UserConfig
-    hidden [PSObject]$InstalledDepots
-    hidden [PSObject]$MountedDepots
+    [PSObject]$InstalledDepots
+    [PSObject]$MountedDepots
 
     [ValidatePattern("\.acf$")]
     hidden [string]$PSPath
+    hidden [string]$PSParentPath
     [string]$InstallDirectory
 
     hidden [bool]$Installed
-    
+
     # Methods
 
     [string]static GetInstallDirectory($AcfPath, $installdir) {
         return (Join-Path (Split-Path -Path $AcfPath -Parent) "common\$installdir")
     }
-    
+
     [void]static Launch($ApplicationID) {
         & (FindSteamInstallation -Exe) -applaunch $ApplicationID
     }
@@ -48,7 +49,7 @@ class SteamGame {
         [SteamGame]::Launch($this.ApplicationID)
     }
 
-    [int]GetInstallDirectorySize() {
+    [uint64]GetInstallDirectorySize() {
         if (Test-Path $this.InstallDirectory) {
             return (GetFolderSize -Path $this.InstallDirectory)
         } else {
@@ -79,8 +80,9 @@ class SteamGame {
         $this.UserConfig = $Game.UserConfig
         $this.InstalledDepots = $Game.InstalledDepots
         $this.MountedDepots = $Game.MountedDepots
-        
+
         $this.PSPath = $Path
+        $this.PSParentPath = Split-Path -Path $this.PSPath -Parent
         $this.InstallDirectory = [SteamGame]::GetInstallDirectory($Path, $this.installdir)
     }
 
@@ -98,7 +100,7 @@ class SteamGame {
         [uint64]$BytesToDownload,
         [uint64]$BytesDownloaded,
         [AutoUpdateBehavior]$AutoUpdateBehavior,
-        [int]$AllowOtherDownloadsWhileRunning,
+        [AllowOtherDownloads]$AllowOtherDownloadsWhileRunning,
         [PSObject]$UserConfig,
         [PSObject]$InstalledDepots,
         [PSObject]$MountedDepots,
@@ -125,9 +127,10 @@ class SteamGame {
 
         # Calculated values
         $this.PSPath = (Resolve-Path $PSPath)
+        $this.PSParentPath = Split-Path -Path $this.PSPath -Parent
         $this.InstallDirectory = [SteamGame]::GetInstallDirectory($this.PSPath, $this.installdir)
     }
-    
+
     SteamGame ([PSCustomObject]$Content) {
         # Everything we take from the ACF
         $this.ApplicationID = $Content.appid
@@ -150,6 +153,7 @@ class SteamGame {
 
         # Calculated values
         $this.PSPath = (Resolve-Path $Content.PSPath)
+        $this.PSParentPath = Split-Path -Path $this.PSPath -Parent
         $this.InstallDirectory = [SteamGame]::GetInstallDirectory($this.PSPath, $this.installdir)
     }
 }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <SelectionSets>
+        <SelectionSet>
+            <Name>SteamLibrarianTypes</Name>
+            <Types>
+                <TypeName>SteamGame</TypeName>
+                <TypeName>SteamLibrary</TypeName>
+            </Types>
+        </SelectionSet>
+    </SelectionSets>
+    <!-- ################ CONTROL DEFINITIONS ################ -->
+    <Controls>
+        <Control>
+            <Name>SteamLibrarian-GroupingFormat</Name>
+            <CustomControl>
+                <CustomEntries>
+                    <CustomEntry>
+                        <CustomItem>
+                            <Frame>
+                                <LeftIndent>4</LeftIndent>
+                                <CustomItem>
+                                    <Text>SteamLibrary: </Text>
+                                    <ExpressionBinding>
+                                        <ScriptBlock>
+                                            $_.PSParentPath.Replace("Microsoft.PowerShell.Core\FileSystem::","")
+                                        </ScriptBlock>
+                                    </ExpressionBinding>
+                                    <NewLine/>
+                                    <Text>  Total Size: </Text>
+                                    <ExpressionBinding>
+                                        <ScriptBlock>
+                                            "$([Math]::Round(((New-Object -com Scripting.FileSystemObject).GetFolder($_.PSParentPath).Size / 1GB), 2)) GB"
+                                        </ScriptBlock>
+                                    </ExpressionBinding>
+                                    <NewLine/>
+                                </CustomItem>
+                            </Frame>
+                        </CustomItem>
+                    </CustomEntry>
+                </CustomEntries>
+            </CustomControl>
+        </Control>
+    </Controls>
+    <ViewDefinitions>
+        <View>
+            <Name>SteamLibrary</Name>
+            <ViewSelectedBy>
+                <TypeName>SteamLibrary</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Width>35</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Games</Label>
+                        <Width>11</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Size</Label>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Path</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    $_.Games.Count
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    $Bytes = $_.SizeOnDisk
+                                    switch ($Bytes) {
+                                        {$_ -lt 1000MB} {"$([Math]::Round($Bytes / 1MB, 2)) MB"}
+                                        {$_ -ge 1000MB} {"$([Math]::Round($Bytes / 1GB, 2)) GB"}
+                                    }
+                                </ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>SteamGame</Name>
+            <ViewSelectedBy>
+                <TypeName>SteamGame</TypeName>
+            </ViewSelectedBy>
+            <GroupBy>
+                <PropertyName>PSParentPath</PropertyName>
+                <CustomControlName>SteamLibrarian-GroupingFormat</CustomControlName>
+            </GroupBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Label>ID</Label>
+                        <Width>7</Width>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Name</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>State</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Size</Label>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>ApplicationID</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Name</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>StateFlags</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    $Bytes = $_.SizeOnDisk
+                                    switch ($Bytes) {
+                                        {$_ -lt 1000MB} {"$([Math]::Round($Bytes / 1MB, 2)) MB"}
+                                        {$_ -ge 1000MB} {"$([Math]::Round($Bytes / 1GB, 2)) GB"}
+                                    }
+                                </ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>

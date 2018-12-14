@@ -7,7 +7,13 @@
     # Functions to export. Populated by Optimize-Module during the build step.
     # For best performance, do not use wildcards and do not delete this entry!
     # Use an empty array if there is nothing to export.
-    FunctionsToExport      = @()
+    FunctionsToExport      = @(
+        'Add-SteamLibrary'
+        'Get-SteamGame'
+        'Get-SteamGameList'
+        'Get-SteamLibrary'
+        'Install-SteamGame'
+    )
 
     # Cmdlets to export.
     # For best performance, do not use wildcards and do not delete this entry!
@@ -18,6 +24,8 @@
     # For best performance, do not use wildcards and do not delete this entry!
     # Use an empty array if there is nothing to export.
     AliasesToExport        = @()
+
+    FormatsToProcess       = "$PSScriptRoot\data\SteamLibrarian.Format.ps1xml"
 
     # ID used to uniquely identify this module
     GUID                   = '9950C257-9F08-419A-87A4-D77C5A986593'

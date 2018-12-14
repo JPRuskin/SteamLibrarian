@@ -9,7 +9,7 @@ It has mostly been surpassed by Valve gradually adding features to Steam.
 To build SteamLibrarian locally, run the following code:
 
 ```PowerShell
-Optimize-Module -Path $ModulePath -Output $ModulePath\$Version -ModuleVersion $Version
+Build-Module -Path $ModulePath -Output $ModulePath\$Version -ModuleVersion $Version
 ```
 
 ## Testing SteamLibrarian

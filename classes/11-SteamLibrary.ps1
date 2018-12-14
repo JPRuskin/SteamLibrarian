@@ -3,6 +3,7 @@ class SteamLibrary {
     [Alias('PSPath')]
     [string]$Path
     [SteamGame[]]$Games
+    [uint64]$SizeOnDisk
 
     # Methods
 
@@ -13,10 +14,12 @@ class SteamLibrary {
     SteamLibrary () {
         $this.Path = FindSteamInstallation
         $this.Games = [SteamLibrary]::GetAllGames($this.Path)
+        $this.SizeOnDisk = GetFolderSize -Path $this.Path
     }
 
     SteamLibrary ($Path) {
         $this.Path = $Path
         $this.Games = [SteamLibrary]::GetAllGames($this.Path)
+        $this.SizeOnDisk = GetFolderSize -Path $this.Path
     }
 }
