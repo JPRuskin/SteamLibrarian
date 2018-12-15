@@ -1,4 +1,17 @@
 function Install-SteamGame {
+    <#
+        .Synopsis
+            Prompts Steam to install a game
+
+        .Notes
+            - Tab completion works nicely on the Name parameter
+
+        .Example
+            Install-SteamGame -Name "Team Fortress 2"
+
+        .Example
+            Install-SteamGame -ID 440
+    #>
     [CmdletBinding(DefaultParameterSetName = "Name")]
     param(
         [ArgumentCompleter({

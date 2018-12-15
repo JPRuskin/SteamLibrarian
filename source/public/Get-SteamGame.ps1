@@ -1,4 +1,20 @@
 function Get-SteamGame {
+    <#
+        .Synopsis
+            Returns data on currently installed Steam Game(s)
+
+        .Example
+            Get-SteamGame  # Returns all games
+
+        .Example
+            Get-SteamGame -ID 440
+
+        .Example
+            Get-SteamGame -Name "Team Fortress 2"
+
+        .Example
+            Get-SteamGame -Path G:\Games\Steam\steamapps\appmanifest_440.acf
+    #>
     [CmdletBinding(DefaultParameterSetName = 'All')]
     param(
         [Parameter(Mandatory, ParameterSetName = 'ID')]
